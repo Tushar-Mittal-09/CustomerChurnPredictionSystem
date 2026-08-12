@@ -1,5 +1,5 @@
 """
-Unit tests for metrics calculation, preprocessing pipeline, baseline models, and candidate training.
+Unit tests for metrics calculation, preprocessing pipeline, baseline models, candidate training, hyperparameter tuning, and threshold optimization.
 """
 from pathlib import Path
 import numpy as np
@@ -8,6 +8,8 @@ import pytest
 from src.models.baseline import build_preprocessor, run_baseline_experiments
 from src.models.train import train_candidate_models
 from src.models.evaluate import evaluate_and_compare_models
+from src.models.tune import run_hyperparameter_optimization
+from src.models.threshold import optimize_classification_threshold
 from src.utils.metrics import compute_classification_metrics
 from src.utils.config import get_project_root
 
@@ -66,7 +68,7 @@ def test_run_baseline_experiments():
 
 
 def test_candidate_models_training_and_evaluation():
-    """Verify candidate models (Logistic Regression, RF, XGBoost, CatBoost) train and evaluate."""
+    """Verify candidate models train and evaluate."""
     summary = evaluate_and_compare_models()
 
     assert "Logistic Regression" in summary
@@ -82,3 +84,15 @@ def test_candidate_models_training_and_evaluation():
     assert (root / "reports/figures/model_comparison_roc.png").exists()
     assert (root / "reports/figures/model_comparison_pr.png").exists()
     assert (root / "reports/metrics/model_comparison.json").exists()
+
+
+def test_threshold_optimization():
+    """Verify business threshold optimization selects valid optimal decision threshold."""
+    y_true = np.array([0, 1, 1, 0, 1, 0, 1, 0, 0, 1])
+    y_prob = np.array([0.1, 0.85, 0.6, 0.2, 0.9, 0.4, 0.75, 0.15, 0.3, 0.8])
+
+    opt_tau, summary, df_res = optimize_classification_threshold(y_true, y_prob, cost_fn=500.0, cost_fp=50.0)
+
+    assert 0.10 <= opt_tau <= 0.90
+    assert summary["min_business_cost"] >= 0
+    assert not df_res.empty

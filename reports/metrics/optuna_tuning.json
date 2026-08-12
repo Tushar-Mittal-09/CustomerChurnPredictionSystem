@@ -1,0 +1,24 @@
+{
+  "XGBoost": {
+    "best_params": {
+      "n_estimators": 87,
+      "max_depth": 4,
+      "learning_rate": 0.034461145017304656,
+      "subsample": 0.6123644952505015,
+      "colsample_bytree": 0.7848997287307897,
+      "min_child_weight": 2,
+      "scale_pos_weight": 2.7691131498470947
+    },
+    "best_cv_roc_auc": 0.8460056985273949
+  },
+  "CatBoost": {
+    "best_params": {
+      "iterations": 175,
+      "depth": 7,
+      "learning_rate": 0.010787784472561143,
+      "l2_leaf_reg": 2.389927604815028,
+      "auto_class_weights": "None"
+    },
+    "best_cv_roc_auc": 0.846466397487484
+  }
+}
