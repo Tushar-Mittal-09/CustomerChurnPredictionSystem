@@ -9,6 +9,7 @@ __pycache__/
 .pytest_cache/
 .coverage
 htmlcov/
+catboost_info/
 
 # Logs & Temporary files
 logs/*.log
@@ -17,7 +18,7 @@ logs/*.log
 .idea/
 .vscode/
 
-# Project Data & Models artifacts (raw large data kept in data/raw if needed, but ignored if large)
+# Project Data & Models artifacts
 data/processed/*.csv
 data/external/
 *.joblib

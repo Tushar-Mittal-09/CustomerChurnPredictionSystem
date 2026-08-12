@@ -4,6 +4,8 @@ Generates global feature importance plots, beeswarm plots, and individual custom
 """
 from pathlib import Path
 from typing import Dict, Any, Tuple
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd

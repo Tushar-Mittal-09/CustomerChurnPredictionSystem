@@ -4,6 +4,8 @@ Calculates Accuracy, Precision, Recall, F1-Score, ROC-AUC, PR-AUC, and generates
 """
 from pathlib import Path
 from typing import Dict, Any, Tuple, Optional
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
