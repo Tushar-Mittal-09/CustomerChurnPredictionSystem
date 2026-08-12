@@ -1,0 +1,18 @@
+{
+  "Majority_Class_Baseline": {
+    "accuracy": 0.7348484848484849,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "roc_auc": 0.5,
+    "pr_auc": 0.6325757575757576
+  },
+  "Logistic_Regression_Baseline": {
+    "accuracy": 0.8039772727272727,
+    "precision": 0.642023346303502,
+    "recall": 0.5892857142857143,
+    "f1": 0.6145251396648045,
+    "roc_auc": 0.8451376104565537,
+    "pr_auc": 0.6278519320276261
+  }
+}
