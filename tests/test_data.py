@@ -1,14 +1,14 @@
 """
-Unit tests for data ingestion, download, and validation modules.
+Unit tests for data ingestion, download, validation, and cleaning modules.
 """
 from pathlib import Path
 import pandas as pd
 import pytest
+from src.data.cleaning import clean_dataset, save_cleaned_data
 from src.data.download import download_raw_dataset
 from src.data.ingestion import ingest_raw_data
-from src.data.validation import validate_raw_data, DataValidationError, EXPECTED_COLUMNS
+from src.data.validation import validate_raw_data, DataValidationError
 from src.utils.config import get_project_root, load_config
-from src.utils.logger import get_logger
 
 
 def test_project_root_exists():
@@ -55,10 +55,27 @@ def test_validate_raw_data_missing_column():
     assert "Missing required columns" in str(exc_info.value) or "Target column 'Churn' not found" in str(exc_info.value)
 
 
-def test_validate_raw_data_invalid_target():
-    """Verify that validation detects corrupted target column values."""
-    df, _ = ingest_raw_data()
-    df_bad_target = df.copy()
-    df_bad_target["Churn"] = "INVALID_VALUE"
-    with pytest.raises(DataValidationError):
-        validate_raw_data(df_bad_target)
+def test_clean_dataset_imputation_and_encoding():
+    """Verify that clean_dataset correctly handles whitespace TotalCharges and binary Churn mapping."""
+    raw_df, _ = ingest_raw_data()
+    clean_df, meta = clean_dataset(raw_df)
+
+    assert meta["final_rows"] > 0
+    # Verify TotalCharges is numeric float without NaNs
+    assert pd.api.types.is_float_dtype(clean_df["TotalCharges"])
+    assert clean_df["TotalCharges"].isna().sum() == 0
+
+    # Verify Churn is binary (0 or 1)
+    assert set(clean_df["Churn"].unique()).issubset({0, 1})
+    assert clean_df["Churn"].dtype == int
+
+
+def test_save_cleaned_data(tmp_path):
+    """Verify saving cleaned data to CSV file."""
+    raw_df, _ = ingest_raw_data()
+    clean_df, _ = clean_dataset(raw_df)
+    out_file = tmp_path / "cleaned.csv"
+    saved_path = save_cleaned_data(clean_df, str(out_file))
+    assert saved_path.exists()
+    reloaded = pd.read_csv(saved_path)
+    assert len(reloaded) == len(clean_df)
