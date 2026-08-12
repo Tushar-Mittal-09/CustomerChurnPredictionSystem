@@ -1,11 +1,13 @@
 """
-Unit tests for metrics calculation, preprocessing pipeline, and baseline models.
+Unit tests for metrics calculation, preprocessing pipeline, baseline models, and candidate training.
 """
 from pathlib import Path
 import numpy as np
 import pandas as pd
 import pytest
 from src.models.baseline import build_preprocessor, run_baseline_experiments
+from src.models.train import train_candidate_models
+from src.models.evaluate import evaluate_and_compare_models
 from src.utils.metrics import compute_classification_metrics
 from src.utils.config import get_project_root
 
@@ -59,6 +61,24 @@ def test_run_baseline_experiments():
     assert lr_res["accuracy"] > 0.70
     assert lr_res["roc_auc"] > 0.80
 
-    # Check generated metrics JSON
     root = get_project_root()
     assert (root / "reports/metrics/baseline_metrics.json").exists()
+
+
+def test_candidate_models_training_and_evaluation():
+    """Verify candidate models (Logistic Regression, RF, XGBoost, CatBoost) train and evaluate."""
+    summary = evaluate_and_compare_models()
+
+    assert "Logistic Regression" in summary
+    assert "Random Forest" in summary
+    assert "XGBoost" in summary
+    assert "CatBoost" in summary
+
+    for model_name, metrics in summary.items():
+        assert metrics["roc_auc"] > 0.75
+        assert metrics["accuracy"] > 0.70
+
+    root = get_project_root()
+    assert (root / "reports/figures/model_comparison_roc.png").exists()
+    assert (root / "reports/figures/model_comparison_pr.png").exists()
+    assert (root / "reports/metrics/model_comparison.json").exists()
