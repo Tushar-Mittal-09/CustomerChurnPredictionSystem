@@ -1,0 +1,30 @@
+# Environment & Dependencies
+.venv/
+venv/
+ENV/
+env/
+*.pyc
+__pycache__/
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs & Temporary files
+logs/*.log
+*.log
+.DS_Store
+.idea/
+.vscode/
+
+# Project Data & Models artifacts (raw large data kept in data/raw if needed, but ignored if large)
+data/processed/*.csv
+data/external/
+*.joblib
+*.pkl
+models/*.joblib
+models/*.pkl
+
+# Environment variables
+.env
+!.env.example

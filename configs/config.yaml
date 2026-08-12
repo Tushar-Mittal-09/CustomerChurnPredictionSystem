@@ -1,0 +1,36 @@
+project:
+  name: "ChurnGuard AI"
+  version: "1.0.0"
+  random_state: 42
+
+data:
+  raw_path: "data/raw/Telco_Customer_Churn.csv"
+  raw_dir: "data/raw"
+  processed_dir: "data/processed"
+  train_path: "data/processed/train.csv"
+  val_path: "data/processed/val.csv"
+  test_path: "data/processed/test.csv"
+  target_column: "Churn"
+  id_column: "customerID"
+  source_url: "https://raw.githubusercontent.com/IBM/telco-customer-churn/master/WA_Fn-UseC_-Telco-Customer-Churn.csv"
+
+split:
+  train_ratio: 0.70
+  val_ratio: 0.15
+  test_ratio: 0.15
+  stratify: true
+
+model:
+  path: "models"
+  model_filename: "churn_model.joblib"
+  preprocessing_filename: "preprocessing.joblib"
+  metadata_filename: "model_metadata.json"
+  default_threshold: 0.50
+
+business_cost:
+  false_negative_cost: 500.0  # Cost of losing a customer unassisted
+  false_positive_cost: 50.0   # Cost of sending retention incentive unnecessarily
+
+logging:
+  level: "INFO"
+  file: "logs/project.log"
